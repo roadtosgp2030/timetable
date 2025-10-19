@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 export default async function Home() {
   return (
     <div>
-      <Button variant='default'>Testing</Button>
+      <h1>Thống kê</h1>
     </div>
   )
 }
