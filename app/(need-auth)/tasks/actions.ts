@@ -60,10 +60,13 @@ export async function deleteTask(taskId: string) {
   const userId: User = JSON.parse(decodeURIComponent(userEncoded!))
 
   try {
-    const task = await prisma.task.delete({
+    const task = await prisma.task.update({
       where: {
         id: taskId,
         userId: userId.id,
+      },
+      data: {
+        isDeleted: true,
       },
     })
     return task

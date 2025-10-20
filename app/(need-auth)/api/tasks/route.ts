@@ -8,7 +8,9 @@ export async function GET(request: Request) {
     ? JSON.parse(decodeURIComponent(userCookie.value)).id
     : null
 
-  const tasks = await prisma.task.findMany({ where: { userId } })
+  const tasks = await prisma.task.findMany({
+    where: { userId, isDeleted: false },
+  })
 
   return new Response(JSON.stringify(tasks), {
     headers: { 'Content-Type': 'application/json' },

@@ -33,6 +33,7 @@ model Task {
   start       DateTime
   end         DateTime?
   user        User     @relation(fields: [userId], references: [id])
+  isDeleted   Boolean?  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
