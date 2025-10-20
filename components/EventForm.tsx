@@ -50,6 +50,7 @@ export const EventForm = forwardRef<HTMLFormElement, EventFormProps>(
             }
             placeholder='Enter event title'
             required
+            autoFocus
           />
         </div>
 
