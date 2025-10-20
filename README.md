@@ -1,3 +1,5 @@
 # A small project to manage your timetable.
 
+## Built with love by [@roadtosgp2030]
+
 Techstack: Next.js, Tailwind CSS, Shadcn UI, Prisma, MongoDB, Full-Calendar, Jotai, Typescript.

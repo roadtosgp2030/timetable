@@ -30,6 +30,8 @@ model Task {
   status      String   @default("PENDING")
   type        String   @default("GENERAL")
   userId      String   @db.ObjectId
+  start       DateTime
+  end         DateTime?
   user        User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
