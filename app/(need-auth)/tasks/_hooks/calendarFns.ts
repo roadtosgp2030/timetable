@@ -4,7 +4,7 @@ import {
   EventDropArg,
 } from '@fullcalendar/core/index.js'
 import { EventResizeDoneArg } from '@fullcalendar/interaction/index.js'
-import { deleteTask } from '../actions'
+import { deleteTask, updateTask } from '../actions'
 
 interface PropsType {
   setSelectedDateInfo: React.Dispatch<
@@ -58,15 +58,24 @@ export function useCalendarFns({
 
   const onDropOrResize = (info: EventDropArg | EventResizeDoneArg) => {
     setTasks(prev =>
-      prev.map(event =>
-        event.id === info.event.id
-          ? {
-              ...event,
-              start: info.event.start || event.start,
-              end: info.event.end || event.end,
-            }
-          : event
-      )
+      prev.map(event => {
+        if (event.id === info.event.id) {
+          updateTask({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            start: info.event.start!,
+            end: info.event.end || undefined,
+            status: event.status,
+          })
+          return {
+            ...event,
+            start: info.event.start!,
+            end: info.event.end,
+          }
+        }
+        return event
+      })
     )
   }
 
