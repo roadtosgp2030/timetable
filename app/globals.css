@@ -182,3 +182,37 @@
 .fc-timegrid-now-indicator-arrow {
   @apply border-red-500;
 }
+
+/* Task Status Colors */
+.fc-event.status-pending {
+  @apply shadow-yellow-200/50 hover:shadow-yellow-300/60;
+}
+
+.fc-event.status-progress {
+  @apply shadow-blue-200/50 hover:shadow-blue-300/60;
+}
+
+.fc-event.status-done {
+  @apply shadow-green-200/50 hover:shadow-green-300/60;
+}
+
+.fc-event.status-stop {
+  @apply shadow-red-200/50 hover:shadow-red-300/60;
+}
+
+/* Enhance hover effects for different statuses */
+.fc-event.status-pending:hover {
+  @apply brightness-105;
+}
+
+.fc-event.status-progress:hover {
+  @apply brightness-105;
+}
+
+.fc-event.status-done:hover {
+  @apply brightness-105;
+}
+
+.fc-event.status-stop:hover {
+  @apply brightness-105;
+}

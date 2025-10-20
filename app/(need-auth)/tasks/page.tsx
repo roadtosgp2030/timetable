@@ -18,6 +18,7 @@ import useFormSubmit from './_hooks/formSubmit'
 import useShortcuts from './_hooks/shortcuts'
 import { useCalendarFns } from './_hooks/calendarFns'
 import { EventFormData } from '@/utils/task'
+import { getStatusColor, STATUS_COLORS } from '@/utils/colors'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -125,79 +126,119 @@ export default function TasksPage() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'>
-      <div className='p-6 max-w-7xl mx-auto'>
-        {/* Header Section */}
-        <div className='mb-8'>
-          <div className='bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4'>
-            <div className='flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4'>
+      <div className='flex h-[calc(100vh-4rem)]'>
+        {/* Sidebar */}
+        <div className='w-80 bg-white shadow-lg border-r border-slate-200 flex flex-col'>
+          {/* Header Section */}
+          <div className='p-6 border-b border-slate-200'>
+            <div className='space-y-4'>
               <div className='space-y-2'>
-                <h1 className='text-3xl font-bold text-slate-900 flex items-center gap-3'>
+                <h1 className='text-2xl font-bold text-slate-900 flex items-center gap-3'>
                   📅 Task Calendar
                 </h1>
-                <p className='text-slate-600'>
+                <p className='text-slate-600 text-sm'>
                   Organize your schedule and manage tasks with our interactive
                   calendar
                 </p>
               </div>
 
-              <div className='flex items-center gap-4'>
-                {/* Task Counter */}
-                <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full shadow-sm'>
-                  <div className='text-sm font-medium'>
-                    {isLoading ? (
-                      <span className='flex items-center gap-2'>
-                        <div className='w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
-                        Loading...
-                      </span>
-                    ) : error ? (
-                      <span className='flex items-center gap-2'>
-                        <span>⚠️</span>
-                        Error
-                      </span>
-                    ) : (
-                      <span>
-                        {tasks.length} task{tasks.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className='flex items-center gap-2'>
-                  <button
-                    onClick={refreshTasks}
-                    disabled={isLoading}
-                    className='group flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm'
-                    title='Refresh tasks'>
-                    <RefreshCw
-                      size={16}
-                      className={`text-slate-600 group-hover:text-slate-900 transition-colors ${
-                        isLoading ? 'animate-spin' : ''
-                      }`}
-                    />
-                    <span className='text-sm font-medium text-slate-700 group-hover:text-slate-900'>
-                      Refresh
+              {/* Task Counter */}
+              <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-xl shadow-sm'>
+                <div className='text-sm font-medium text-center'>
+                  {isLoading ? (
+                    <span className='flex items-center justify-center gap-2'>
+                      <div className='w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                      Loading...
                     </span>
-                  </button>
-
-                  <button
-                    onClick={() => setIsHelpModalOpen(true)}
-                    className='group flex items-center gap-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all duration-200 shadow-sm'
-                    title='Show keyboard shortcuts (Ctrl+/)'>
-                    <HelpCircle size={16} />
-                    <span className='text-sm font-medium'>Help</span>
-                    <kbd className='bg-indigo-400 bg-opacity-50 px-2 py-0.5 rounded text-xs font-mono'>
-                      Ctrl+/
-                    </kbd>
-                  </button>
+                  ) : error ? (
+                    <span className='flex items-center justify-center gap-2'>
+                      <span>⚠️</span>
+                      Error
+                    </span>
+                  ) : (
+                    <span>
+                      {tasks.length} task{tasks.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='space-y-2'>
+                <button
+                  onClick={refreshTasks}
+                  disabled={isLoading}
+                  className='w-full group flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 hover:border-slate-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                  title='Refresh tasks'>
+                  <RefreshCw
+                    size={16}
+                    className={`text-slate-600 group-hover:text-slate-900 transition-colors ${
+                      isLoading ? 'animate-spin' : ''
+                    }`}
+                  />
+                  <span className='text-sm font-medium text-slate-700 group-hover:text-slate-900'>
+                    Refresh Tasks
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setIsHelpModalOpen(true)}
+                  className='w-full group flex items-center justify-center gap-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all duration-200'
+                  title='Show keyboard shortcuts (Ctrl+/)'>
+                  <HelpCircle size={16} />
+                  <span className='text-sm font-medium'>Help</span>
+                  <kbd className='bg-indigo-400 bg-opacity-50 px-2 py-0.5 rounded text-xs font-mono'>
+                    Ctrl+/
+                  </kbd>
+                </button>
               </div>
             </div>
           </div>
 
+          {/* Status Legend */}
+          <div className='p-6 border-b border-slate-200'>
+            <h3 className='text-sm font-semibold text-slate-700 mb-4'>
+              Task Status Colors
+            </h3>
+            <div className='space-y-3'>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='w-4 h-4 rounded-full'
+                  style={{ backgroundColor: STATUS_COLORS.pending }}></div>
+                <span className='text-sm text-slate-600'>Pending</span>
+              </div>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='w-4 h-4 rounded-full'
+                  style={{ backgroundColor: STATUS_COLORS.progress }}></div>
+                <span className='text-sm text-slate-600'>In Progress</span>
+              </div>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='w-4 h-4 rounded-full'
+                  style={{ backgroundColor: STATUS_COLORS.done }}></div>
+                <span className='text-sm text-slate-600'>Done</span>
+              </div>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='w-4 h-4 rounded-full'
+                  style={{ backgroundColor: STATUS_COLORS.stop }}></div>
+                <span className='text-sm text-slate-600'>Stopped</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Flexible space for future sidebar content */}
+          <div className='flex-1 p-6'>
+            {/* You can add more sidebar content here in the future */}
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className='flex-1 flex flex-col'>
           {/* Calendar Container */}
-          <div className='bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden'>
-            <div className='h-[calc(100vh-300px)] min-h-[600px] relative'>
+          <div className='flex-1 bg-white shadow-lg border border-slate-200 m-6 rounded-2xl overflow-hidden'>
+            <div className='h-full relative'>
               {isLoading && <LoadingOverlay text='Loading tasks...' />}
               {error && (
                 <div className='absolute inset-0 bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-xl flex items-center justify-center z-10 m-4'>
@@ -241,8 +282,17 @@ export default function TasksPage() {
                   slotMinTime='05:30:00'
                   slotMaxTime='22:00:00'
                   scrollTime={new Date().toTimeString().substring(0, 8)}
-                  // Events
-                  events={tasks}
+                  // Events with status-based colors
+                  events={tasks.map(task => {
+                    const colors = getStatusColor(task.status)
+                    return {
+                      ...task,
+                      backgroundColor: colors.backgroundColor,
+                      borderColor: colors.borderColor,
+                      textColor: colors.textColor,
+                      classNames: [`status-${task.status || 'pending'}`],
+                    }
+                  })}
                   // Event handlers
                   select={handleDateSelect}
                   eventClick={handleEventClick}
