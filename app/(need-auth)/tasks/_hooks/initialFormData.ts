@@ -1,4 +1,5 @@
 import { Task } from '@/types/task'
+import { EventStatus } from '@/utils/task'
 import { DateSelectArg } from '@fullcalendar/core/index.js'
 
 interface PropsType {
@@ -27,6 +28,7 @@ export default function useInitialFormData({
         start: gmtPlus7Start.toISOString().slice(0, 16),
         end: gmtPlus7End?.toISOString().slice(0, 16) || '',
         allDay: editingEvent.allDay || false,
+        status: editingEvent.status || 'pending',
       }
     } else if (selectedDateInfo) {
       const startDate = new Date(selectedDateInfo.start)
@@ -46,6 +48,7 @@ export default function useInitialFormData({
         start: gmtPlus7Start.toISOString().slice(0, 16),
         end: gmtPlus7End?.toISOString().slice(0, 16) || '',
         allDay: selectedDateInfo.allDay,
+        status: 'pending',
       }
     }
     return undefined

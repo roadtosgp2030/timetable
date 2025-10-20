@@ -28,6 +28,7 @@ export default function useFormSubmit({
                 start: new Date(formData.start),
                 end: new Date(formData.end),
                 allDay: formData.allDay,
+                status: formData.status,
               }
             : event
         )
@@ -44,6 +45,7 @@ export default function useFormSubmit({
           : new Date(formData.start),
         end: formData.allDay ? selectedDateInfo.end : new Date(formData.end),
         allDay: formData.allDay,
+        status: formData.status,
       }
       setTasks(prev => [...prev, newEvent])
     }

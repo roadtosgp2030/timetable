@@ -1,3 +1,7 @@
+import { STATUSES } from '@/constants'
+
+export type TaskStatus = (typeof STATUSES)[number]
+
 export interface Task {
   id: string
   title: string
@@ -5,4 +9,5 @@ export interface Task {
   start: Date
   end?: Date
   allDay?: boolean
+  status?: TaskStatus
 }

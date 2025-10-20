@@ -15,6 +15,7 @@ import useInitialFormData from './_hooks/initialFormData'
 import useFormSubmit from './_hooks/formSubmit'
 import useShortcuts from './_hooks/shortcuts'
 import { useCalendarFns } from './_hooks/calendarFns'
+import { EventFormData } from '@/utils/task'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -131,7 +132,7 @@ export default function TasksPage() {
         onDelete={editingEvent ? handleDeleteEvent : undefined}>
         <EventForm
           ref={formRef}
-          initialData={getInitialFormData()}
+          initialData={getInitialFormData() as Partial<EventFormData>}
           onSubmit={handleFormSubmit}
           onCancel={onClose}
           isEditing={!!editingEvent}

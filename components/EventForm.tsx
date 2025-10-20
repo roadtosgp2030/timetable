@@ -2,7 +2,8 @@ import { useState, forwardRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { EventFormData } from '@/utils/task'
+import { EventFormData, EventStatus } from '@/utils/task'
+import { STATUSES } from '@/constants'
 
 interface EventFormProps {
   initialData?: Partial<EventFormData>
@@ -24,6 +25,7 @@ export const EventForm = forwardRef<HTMLFormElement, EventFormProps>(
         initialData?.end ||
         new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16),
       allDay: initialData?.allDay || false,
+      status: initialData?.status || 'pending',
     })
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -63,6 +65,35 @@ export const EventForm = forwardRef<HTMLFormElement, EventFormProps>(
             placeholder='Enter event description (optional)'
             rows={3}
           />
+        </div>
+
+        <div>
+          <Label>Status</Label>
+          <div className='flex flex-wrap gap-4 mt-2'>
+            {STATUSES.map(status => (
+              <div key={status} className='flex items-center space-x-2'>
+                <input
+                  id={`status-${status}`}
+                  type='radio'
+                  name='status'
+                  value={status}
+                  checked={formData.status === status}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      status: e.target.value as EventStatus,
+                    }))
+                  }
+                  className='rounded'
+                />
+                <Label
+                  htmlFor={`status-${status}`}
+                  className='capitalize cursor-pointer'>
+                  {status === 'progress' ? 'In Progress' : status}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className='flex items-center space-x-2'>
