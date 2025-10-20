@@ -1,0 +1,15 @@
+{
+  "React TypeScript Component": {
+    "prefix": "rfc",
+    "body": [
+      "interface PropsType {",
+      "",
+      "}",
+      "",
+      "export function ${1:ComponentName}({ ${3:/* props */} }: PropsType) {",
+      "",
+      "}"
+    ],
+    "description": "Create a React TypeScript functional component with interface"
+  }
+}
