@@ -1,23 +1,9 @@
+import { handleLogin } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { prisma } from '@/lib/prisma'
 import { Label } from '@radix-ui/react-label'
-import { redirect } from 'next/navigation'
 
 export default function page() {
-  async function handleLogin(formData: FormData) {
-    'use server'
-    const email = formData.get('email')
-    const password = formData.get('password')
-
-    const user = await prisma.user.findFirst({
-      where: { email: String(email) },
-    })
-    if (user && user.password === password) {
-      redirect('/tasks')
-    }
-  }
-
   return (
     <div className='grid h-full justify-center items-center'>
       <form action={handleLogin}>
@@ -28,7 +14,7 @@ export default function page() {
             type='text'
             id='email'
             placeholder='Email'
-            defaultValue='admin'
+            defaultValue={process.env.USER_EMAIL}
             name='email'
             autoFocus
           />
@@ -39,7 +25,7 @@ export default function page() {
             type='password'
             id='password'
             placeholder='Password'
-            defaultValue='admin'
+            defaultValue={process.env.USER_PASS}
             name='password'
           />
         </div>
