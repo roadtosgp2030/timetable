@@ -6,6 +6,7 @@ interface ModalProps {
   title: string
   children: ReactNode
   onSubmit?: () => void
+  onDelete?: () => void
 }
 
 export function Modal({
@@ -14,6 +15,7 @@ export function Modal({
   title,
   children,
   onSubmit,
+  onDelete,
 }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return
@@ -46,6 +48,14 @@ export function Modal({
         }
         event.preventDefault()
         onSubmit()
+        return
+      }
+
+      // Delete event on Delete key
+      if (event.key === 'Delete' && onDelete) {
+        event.preventDefault()
+        onDelete()
+        return
       }
     }
 
@@ -56,7 +66,7 @@ export function Modal({
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isOpen, onClose, onSubmit])
+  }, [isOpen, onClose, onSubmit, onDelete])
 
   if (!isOpen) return null
 

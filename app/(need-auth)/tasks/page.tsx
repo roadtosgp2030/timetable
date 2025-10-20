@@ -10,18 +10,11 @@ import { Modal } from '@/components/ui/modal'
 import { EventForm } from '@/components/EventForm'
 import { Button } from '@/components/ui/button'
 import { EventFormData } from '@/utils/task'
-
-interface Event {
-  id: string
-  title: string
-  description?: string
-  start: Date
-  end?: Date
-  allDay?: boolean
-}
+import { Task } from '@/types/task'
+import useInitialFormData from './_hooks/initialFormData'
 
 export default function TasksPage() {
-  const [events, setEvents] = useState<Event[]>([
+  const [events, setEvents] = useState<Task[]>([
     {
       id: '1',
       title: 'Sample Event',
@@ -34,7 +27,12 @@ export default function TasksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDateInfo, setSelectedDateInfo] =
     useState<DateSelectArg | null>(null)
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
+  const [editingEvent, setEditingEvent] = useState<Task | null>(null)
+
+  const { getInitialFormData } = useInitialFormData({
+    editingEvent,
+    selectedDateInfo,
+  })
 
   // Reference to the form for programmatic submission
   const formRef = useRef<HTMLFormElement>(null)
@@ -85,7 +83,7 @@ export default function TasksPage() {
       )
     } else if (selectedDateInfo) {
       // Create new event
-      const newEvent: Event = {
+      const newEvent: Task = {
         id: String(Date.now()),
         title: formData.title,
         description: formData.description,
@@ -113,47 +111,6 @@ export default function TasksPage() {
       setIsModalOpen(false)
       setEditingEvent(null)
     }
-  }
-
-  const getInitialFormData = () => {
-    if (editingEvent) {
-      const startDate = new Date(editingEvent.start)
-      const endDate = editingEvent.end ? new Date(editingEvent.end) : null
-
-      // Convert to GMT+7
-      const gmtPlus7Start = new Date(startDate.getTime() + 7 * 60 * 60 * 1000)
-      const gmtPlus7End = endDate
-        ? new Date(endDate.getTime() + 7 * 60 * 60 * 1000)
-        : null
-
-      return {
-        title: editingEvent.title,
-        description: editingEvent.description || '',
-        start: gmtPlus7Start.toISOString().slice(0, 16),
-        end: gmtPlus7End?.toISOString().slice(0, 16) || '',
-        allDay: editingEvent.allDay || false,
-      }
-    } else if (selectedDateInfo) {
-      const startDate = new Date(selectedDateInfo.start)
-      const endDate = selectedDateInfo.end
-        ? new Date(selectedDateInfo.end)
-        : null
-
-      // Convert to GMT+7
-      const gmtPlus7Start = new Date(startDate.getTime() + 7 * 60 * 60 * 1000)
-      const gmtPlus7End = endDate
-        ? new Date(endDate.getTime() + 7 * 60 * 60 * 1000)
-        : null
-
-      return {
-        title: '',
-        description: '',
-        start: gmtPlus7Start.toISOString().slice(0, 16),
-        end: gmtPlus7End?.toISOString().slice(0, 16) || '',
-        allDay: selectedDateInfo.allDay,
-      }
-    }
-    return undefined
   }
 
   return (
@@ -228,7 +185,8 @@ export default function TasksPage() {
           setEditingEvent(null)
         }}
         title={editingEvent ? 'Edit Event' : 'Create New Event'}
-        onSubmit={handleModalSubmit}>
+        onSubmit={handleModalSubmit}
+        onDelete={editingEvent ? handleDeleteEvent : undefined}>
         <EventForm
           ref={formRef}
           initialData={getInitialFormData()}
