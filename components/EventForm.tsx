@@ -16,7 +16,6 @@ export const EventForm = forwardRef<HTMLFormElement, EventFormProps>(
     { initialData, onSubmit, onCancel, isEditing = false },
     ref
   ) {
-    console.log(initialData)
     const [formData, setFormData] = useState<EventFormData>({
       title: initialData?.title || '',
       description: initialData?.description || '',
