@@ -2,14 +2,7 @@ import { useState, forwardRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-
-interface EventFormData {
-  title: string
-  description: string
-  start: string
-  end: string
-  allDay: boolean
-}
+import { EventFormData } from '@/utils/task'
 
 interface EventFormProps {
   initialData?: Partial<EventFormData>
@@ -23,6 +16,7 @@ export const EventForm = forwardRef<HTMLFormElement, EventFormProps>(
     { initialData, onSubmit, onCancel, isEditing = false },
     ref
   ) {
+    console.log(initialData)
     const [formData, setFormData] = useState<EventFormData>({
       title: initialData?.title || '',
       description: initialData?.description || '',

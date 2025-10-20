@@ -9,6 +9,7 @@ import { useState, useRef } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { EventForm } from '@/components/EventForm'
 import { Button } from '@/components/ui/button'
+import { EventFormData } from '@/utils/task'
 
 interface Event {
   id: string
@@ -65,7 +66,7 @@ export default function TasksPage() {
   }
 
   // Handle form submission
-  const handleFormSubmit = (formData: any) => {
+  const handleFormSubmit = (formData: EventFormData) => {
     if (editingEvent) {
       // Update existing event
       setEvents(prev =>
@@ -116,19 +117,39 @@ export default function TasksPage() {
 
   const getInitialFormData = () => {
     if (editingEvent) {
+      const startDate = new Date(editingEvent.start)
+      const endDate = editingEvent.end ? new Date(editingEvent.end) : null
+
+      // Convert to GMT+7
+      const gmtPlus7Start = new Date(startDate.getTime() + 7 * 60 * 60 * 1000)
+      const gmtPlus7End = endDate
+        ? new Date(endDate.getTime() + 7 * 60 * 60 * 1000)
+        : null
+
       return {
         title: editingEvent.title,
         description: editingEvent.description || '',
-        start: editingEvent.start.toISOString().slice(0, 16),
-        end: editingEvent.end?.toISOString().slice(0, 16) || '',
+        start: gmtPlus7Start.toISOString().slice(0, 16),
+        end: gmtPlus7End?.toISOString().slice(0, 16) || '',
         allDay: editingEvent.allDay || false,
       }
     } else if (selectedDateInfo) {
+      const startDate = new Date(selectedDateInfo.start)
+      const endDate = selectedDateInfo.end
+        ? new Date(selectedDateInfo.end)
+        : null
+
+      // Convert to GMT+7
+      const gmtPlus7Start = new Date(startDate.getTime() + 7 * 60 * 60 * 1000)
+      const gmtPlus7End = endDate
+        ? new Date(endDate.getTime() + 7 * 60 * 60 * 1000)
+        : null
+
       return {
         title: '',
         description: '',
-        start: selectedDateInfo.start.toISOString().slice(0, 16),
-        end: selectedDateInfo.end?.toISOString().slice(0, 16) || '',
+        start: gmtPlus7Start.toISOString().slice(0, 16),
+        end: gmtPlus7End?.toISOString().slice(0, 16) || '',
         allDay: selectedDateInfo.allDay,
       }
     }
