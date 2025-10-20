@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +119,66 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* FullCalendar Custom Styles */
+.calendar-container {
+  @apply rounded-xl overflow-hidden;
+}
+
+.fc-theme-standard .fc-header-toolbar {
+  @apply mb-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200;
+}
+
+.fc-theme-standard .fc-button {
+  @apply bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 shadow-sm font-medium;
+}
+
+.fc-theme-standard .fc-button:not(:disabled).fc-button-active {
+  @apply bg-blue-500 border-blue-500 text-white shadow-md;
+}
+
+.fc-theme-standard .fc-button:not(:disabled):hover {
+  @apply shadow-md transform scale-105;
+}
+
+.fc-toolbar-title {
+  @apply text-2xl font-bold text-slate-800;
+}
+
+.fc-col-header-cell {
+  @apply bg-gradient-to-b from-slate-100 to-slate-50 text-slate-700 font-semibold border-slate-200;
+}
+
+.fc-daygrid-day-number,
+.fc-timegrid-slot-label {
+  @apply text-slate-600 font-medium;
+}
+
+.fc-event {
+  @apply shadow-sm border-0 rounded-lg font-medium;
+}
+
+.fc-event-title {
+  @apply font-semibold;
+}
+
+.fc-timegrid-event {
+  @apply shadow-md;
+}
+
+.fc-daygrid-event {
+  @apply shadow-sm;
+}
+
+.fc-day-today {
+  @apply bg-blue-50/50;
+}
+
+.fc-timegrid-now-indicator-line {
+  @apply border-red-500;
+}
+
+.fc-timegrid-now-indicator-arrow {
+  @apply border-red-500;
 }
