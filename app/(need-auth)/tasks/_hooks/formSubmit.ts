@@ -1,6 +1,7 @@
 import { Task } from '@/types/task'
 import { EventFormData } from '@/utils/task'
 import { DateSelectArg } from '@fullcalendar/core/index.js'
+import { createTask } from '../actions'
 
 interface PropsType {
   editingEvent: Task | null
@@ -47,6 +48,7 @@ export default function useFormSubmit({
         allDay: formData.allDay,
         status: formData.status,
       }
+      createTask(newEvent)
       setTasks(prev => [...prev, newEvent])
     }
 

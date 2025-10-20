@@ -1,9 +1,15 @@
+import { cookies } from 'next/headers'
+import { prisma } from '@/lib/prisma'
+
 export async function GET(request: Request) {
-  // Simulate fetching tasks from a database
-  const tasks = [
-    { id: '1', title: 'Task 1', start: '2024-07-01', end: '2024-07-02' },
-    { id: '2', title: 'Task 2', start: '2024-07-03', end: '2024-07-04' },
-  ]
+  const cookieStore = await cookies()
+  const userCookie = cookieStore.get('user')
+  const userId = userCookie
+    ? JSON.parse(decodeURIComponent(userCookie.value)).id
+    : null
+
+  const tasks = await prisma.task.findMany({ where: { userId } })
+
   return new Response(JSON.stringify(tasks), {
     headers: { 'Content-Type': 'application/json' },
   })
