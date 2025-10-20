@@ -28,24 +28,30 @@ export async function createTask(data: Task) {
   }
 }
 
-export async function updateTask(taskId: string, data: Task) {
+export async function updateTask(data: Task) {
   const cookie = await cookies()
   const userEncoded = cookie.get('user')?.value
   const userId: User = JSON.parse(decodeURIComponent(userEncoded!))
 
-  await prisma.task.update({
-    where: {
-      id: taskId,
-      userId: userId.id,
-    },
-    data: {
-      title: data.title,
-      description: data.description,
-      start: new Date(data.start),
-      end: data.end ? new Date(data.end) : null,
-      status: data.status,
-    },
-  })
+  try {
+    const task = await prisma.task.update({
+      where: {
+        id: data.id,
+        userId: userId.id,
+      },
+      data: {
+        title: data.title,
+        description: data.description,
+        start: new Date(data.start),
+        end: data.end ? new Date(data.end) : null,
+        status: data.status,
+      },
+    })
+    return task
+  } catch (error) {
+    console.error('Failed to update task:', error)
+    throw error
+  }
 }
 
 export async function deleteTask(taskId: string) {
@@ -53,10 +59,16 @@ export async function deleteTask(taskId: string) {
   const userEncoded = cookie.get('user')?.value
   const userId: User = JSON.parse(decodeURIComponent(userEncoded!))
 
-  await prisma.task.delete({
-    where: {
-      id: taskId,
-      userId: userId.id,
-    },
-  })
+  try {
+    const task = await prisma.task.delete({
+      where: {
+        id: taskId,
+        userId: userId.id,
+      },
+    })
+    return task
+  } catch (error) {
+    console.error('Failed to delete task:', error)
+    throw error
+  }
 }

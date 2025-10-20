@@ -4,6 +4,7 @@ import {
   EventDropArg,
 } from '@fullcalendar/core/index.js'
 import { EventResizeDoneArg } from '@fullcalendar/interaction/index.js'
+import { deleteTask } from '../actions'
 
 interface PropsType {
   setSelectedDateInfo: React.Dispatch<
@@ -49,6 +50,7 @@ export function useCalendarFns({
       confirm(`Are you sure you want to delete '${editingEvent.title}'?`)
     ) {
       setTasks(prev => prev.filter(event => event.id !== editingEvent.id))
+      deleteTask(editingEvent.id)
       setIsModalOpen(false)
       setEditingEvent(null)
     }

@@ -1,7 +1,7 @@
 import { Task } from '@/types/task'
 import { EventFormData } from '@/utils/task'
 import { DateSelectArg } from '@fullcalendar/core/index.js'
-import { createTask } from '../actions'
+import { createTask, updateTask } from '../actions'
 
 interface PropsType {
   editingEvent: Task | null
@@ -33,6 +33,14 @@ export default function useFormSubmit({
               }
             : event
         )
+        updateTask({
+          id: editingEvent.id,
+          title: formData.title,
+          description: formData.description,
+          start: new Date(formData.start),
+          end: new Date(formData.end),
+          status: formData.status,
+        })
         return newTasks
       })
     } else if (selectedDateInfo) {
