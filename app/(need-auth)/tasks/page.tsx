@@ -278,6 +278,7 @@ export default function TasksPage() {
                     minute: '2-digit',
                     hour12: false,
                   }}
+                  slotDuration="00:15:00"
                   // Working hours
                   slotMinTime='05:30:00'
                   slotMaxTime='22:00:00'
