@@ -283,6 +283,7 @@ export default function TasksPage() {
                   slotMinTime='05:30:00'
                   slotMaxTime='22:00:00'
                   scrollTime={new Date().toTimeString().substring(0, 8)}
+                  nowIndicator={true}
                   // Events with status-based colors
                   events={tasks.map(task => {
                     const colors = getStatusColor(task.status)
