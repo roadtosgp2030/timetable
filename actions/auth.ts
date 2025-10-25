@@ -3,34 +3,69 @@
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import bcrypt from 'bcryptjs'
+import { validateEmail, validatePassword } from '@/lib/auth'
 
 export async function handleLogin(formData: FormData) {
-  const email = formData.get('email')
-  const password = formData.get('password')
+  try {
+    const email = formData.get('email')
+    const password = formData.get('password')
 
-  const user = await prisma.user.findFirst({
-    where: { email: String(email) },
-  })
+    // Validate input
+    if (!email || !password) {
+      throw new Error('Email and password are required')
+    }
 
-  const cookie = await cookies()
-  cookie.set({
-    name: 'token',
-    value: 'logged-in',
-    httpOnly: true,
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  })
+    // Find user by email
+    const user = await prisma.user.findFirst({
+      where: { email: String(email) },
+    })
 
-  cookie.set({
-    name: 'user',
-    value: JSON.stringify({
-      id: user?.id,
-      email: user?.email,
-    }),
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  })
+    if (!user) {
+      throw new Error('Invalid email or password')
+    }
 
-  if (user && user.password === password) {
+    // Verify password using bcrypt
+    const isPasswordValid = await bcrypt.compare(
+      String(password),
+      user.password
+    )
+
+    if (!isPasswordValid) {
+      throw new Error('Invalid email or password')
+    }
+
+    // Set authentication cookies
+    const cookie = await cookies()
+    cookie.set({
+      name: 'token',
+      value: 'logged-in',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+
+    cookie.set({
+      name: 'user',
+      value: JSON.stringify({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      }),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+
     redirect('/')
+  } catch (error) {
+    // If it's already a redirect error, re-throw it
+    if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
+      throw error
+    }
+    // For other errors, re-throw them so they can be handled by the client
+    throw error
   }
 }
 
@@ -50,14 +85,16 @@ export async function handleSignup(formData: FormData) {
       throw new Error('Passwords do not match')
     }
 
-    if (String(password).length < 6) {
-      throw new Error('Password must be at least 6 characters long')
+    // Validate email format
+    const emailValidation = validateEmail(String(email))
+    if (!emailValidation.isValid) {
+      throw new Error(emailValidation.message || 'Invalid email')
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(String(email))) {
-      throw new Error('Please enter a valid email address')
+    // Validate password strength
+    const passwordValidation = validatePassword(String(password))
+    if (!passwordValidation.isValid) {
+      throw new Error(passwordValidation.message || 'Invalid password')
     }
 
     // Check if user already exists
@@ -69,12 +106,16 @@ export async function handleSignup(formData: FormData) {
       throw new Error('User with this email already exists')
     }
 
-    // Create new user
+    // Hash the password before storing
+    const saltRounds = 12
+    const hashedPassword = await bcrypt.hash(String(password), saltRounds)
+
+    // Create new user with hashed password
     const newUser = await prisma.user.create({
       data: {
         name: String(name),
         email: String(email),
-        password: String(password), // In production, you should hash this password
+        password: hashedPassword,
       },
     })
 
@@ -84,6 +125,8 @@ export async function handleSignup(formData: FormData) {
       name: 'token',
       value: 'logged-in',
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
@@ -94,6 +137,8 @@ export async function handleSignup(formData: FormData) {
         email: newUser.email,
         name: newUser.name,
       }),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
