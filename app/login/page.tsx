@@ -1,9 +1,6 @@
-import { handleLogin } from '@/actions/auth'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@radix-ui/react-label'
 import { Calendar, Clock, CheckCircle, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
+import LoginForm from '@/components/LoginForm'
 
 export default function page() {
   return (
@@ -88,69 +85,7 @@ export default function page() {
               </p>
             </div>
 
-            <form action={handleLogin} className='space-y-5'>
-              <div className='space-y-2'>
-                <Label
-                  htmlFor='email'
-                  className='text-sm font-medium text-gray-700'>
-                  Email Address
-                </Label>
-                <Input
-                  type='text'
-                  id='email'
-                  name='email'
-                  placeholder='Enter your email'
-                  defaultValue={process.env.USER_EMAIL}
-                  className='h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg'
-                  autoFocus
-                  required
-                />
-              </div>
-
-              <div className='space-y-2'>
-                <Label
-                  htmlFor='password'
-                  className='text-sm font-medium text-gray-700'>
-                  Password
-                </Label>
-                <Input
-                  type='password'
-                  id='password'
-                  name='password'
-                  placeholder='Enter your password'
-                  defaultValue={process.env.USER_PASS}
-                  className='h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg'
-                  required
-                />
-              </div>
-
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <input
-                    id='remember-me'
-                    name='remember-me'
-                    type='checkbox'
-                    className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
-                  />
-                  <label
-                    htmlFor='remember-me'
-                    className='ml-2 block text-sm text-gray-700'>
-                    Remember me
-                  </label>
-                </div>
-                <button
-                  type='button'
-                  className='text-sm text-blue-600 hover:text-blue-500 font-medium'>
-                  Forgot password?
-                </button>
-              </div>
-
-              <Button
-                type='submit'
-                className='w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg'>
-                Sign In
-              </Button>
-            </form>
+            <LoginForm />
 
             <div className='text-center'>
               <p className='text-sm text-gray-600'>

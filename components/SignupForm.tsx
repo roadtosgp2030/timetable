@@ -12,6 +12,15 @@ export default function SignupForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  const validatePasswordStrength = (password: string) => {
+    const errors = []
+    if (password.length < 8) errors.push('at least 8 characters')
+    if (!/(?=.*[a-z])/.test(password)) errors.push('one lowercase letter')
+    if (!/(?=.*[A-Z])/.test(password)) errors.push('one uppercase letter')
+    if (!/(?=.*\d)/.test(password)) errors.push('one number')
+    return errors
+  }
+
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true)
     setError('')
@@ -23,8 +32,9 @@ export default function SignupForm() {
       return
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long')
+    const passwordErrors = validatePasswordStrength(password)
+    if (passwordErrors.length > 0) {
+      setError(`Password must contain ${passwordErrors.join(', ')}`)
       setIsSubmitting(false)
       return
     }
@@ -86,16 +96,46 @@ export default function SignupForm() {
           name='password'
           placeholder='Create a strong password'
           className='h-12 border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-lg'
-          minLength={6}
+          minLength={8}
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
           disabled={isSubmitting}
         />
-        {password && password.length < 6 && (
-          <p className='text-xs text-amber-600'>
-            Password must be at least 6 characters
-          </p>
+        {password && (
+          <div className='text-xs space-y-1'>
+            <p className='font-medium text-gray-700'>Password must contain:</p>
+            <div className='grid grid-cols-2 gap-1'>
+              <span
+                className={
+                  password.length >= 8 ? 'text-green-600' : 'text-gray-400'
+                }>
+                ✓ 8+ characters
+              </span>
+              <span
+                className={
+                  /(?=.*[a-z])/.test(password)
+                    ? 'text-green-600'
+                    : 'text-gray-400'
+                }>
+                ✓ Lowercase letter
+              </span>
+              <span
+                className={
+                  /(?=.*[A-Z])/.test(password)
+                    ? 'text-green-600'
+                    : 'text-gray-400'
+                }>
+                ✓ Uppercase letter
+              </span>
+              <span
+                className={
+                  /(?=.*\d)/.test(password) ? 'text-green-600' : 'text-gray-400'
+                }>
+                ✓ Number
+              </span>
+            </div>
+          </div>
         )}
       </div>
 
@@ -157,7 +197,9 @@ export default function SignupForm() {
         type='submit'
         className='w-full h-12 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg'
         disabled={
-          isSubmitting || password !== confirmPassword || password.length < 6
+          isSubmitting ||
+          password !== confirmPassword ||
+          validatePasswordStrength(password).length > 0
         }>
         {isSubmitting ? 'Creating Account...' : 'Create Account'}
       </Button>
