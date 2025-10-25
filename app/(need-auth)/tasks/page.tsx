@@ -278,10 +278,12 @@ export default function TasksPage() {
                     minute: '2-digit',
                     hour12: false,
                   }}
+                  slotDuration='00:15:00'
                   // Working hours
                   slotMinTime='05:30:00'
                   slotMaxTime='22:00:00'
                   scrollTime={new Date().toTimeString().substring(0, 8)}
+                  nowIndicator={true}
                   // Events with status-based colors
                   events={tasks.map(task => {
                     const colors = getStatusColor(task.status)
@@ -302,6 +304,18 @@ export default function TasksPage() {
                   // Styling
                   height='100%'
                   viewClassNames='calendar-container'
+                  businessHours={[
+                    {
+                      daysOfWeek: [2, 3, 5],
+                      startTime: '09:00',
+                      endTime: '18:00',
+                    },
+                    {
+                      daysOfWeek: [1, 4],
+                      startTime: '08:00',
+                      endTime: '17:00',
+                    },
+                  ]}
                 />
               </div>
             </div>
