@@ -4,14 +4,20 @@ import { NextResponse, NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
-  // If user not logged in, redirect to login page
-  if (!token && !request.nextUrl.pathname.startsWith('/login')) {
+  // Public paths that don't require authentication
+  const publicPaths = ['/login', '/signup']
+  const isPublicPath = publicPaths.some(path =>
+    request.nextUrl.pathname.startsWith(path)
+  )
+
+  // If user not logged in, redirect to login page (except for public paths)
+  if (!token && !isPublicPath) {
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)
   }
 
-  // If logged in and trying to access login page, redirect to home
-  if (token && request.nextUrl.pathname.startsWith('/login')) {
+  // If logged in and trying to access login or signup pages, redirect to home
+  if (token && isPublicPath) {
     const homeUrl = new URL('/', request.url)
     return NextResponse.redirect(homeUrl)
   }
