@@ -7,6 +7,7 @@ import { Home, Calendar, LogOut, User, Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import type { User as UserType } from '@/types/user'
+import StreakDisplay from './StreakDisplay'
 
 export default function Navigations() {
   const [user, setUser] = useState<UserType | null>(null)
@@ -69,6 +70,7 @@ export default function Navigations() {
           <div className='hidden md:flex items-center space-x-4'>
             {user ? (
               <div className='flex items-center space-x-3'>
+                <StreakDisplay />
                 <div className='flex items-center space-x-3'>
                   <div className='w-9 h-9 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm'>
                     <User size={18} className='text-white' />

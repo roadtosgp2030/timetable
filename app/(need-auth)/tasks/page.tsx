@@ -17,6 +17,7 @@ import useInitialFormData from './_hooks/initialFormData'
 import useFormSubmit from './_hooks/formSubmit'
 import useShortcuts from './_hooks/shortcuts'
 import { useCalendarFns } from './_hooks/calendarFns'
+import { useStreakUpdate } from '../_hooks/useStreakUpdate'
 import { EventFormData } from '@/utils/task'
 import { getStatusColor, STATUS_COLORS } from '@/utils/colors'
 
@@ -24,6 +25,9 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Update streak when user visits the page
+  useStreakUpdate()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDateInfo, setSelectedDateInfo] =

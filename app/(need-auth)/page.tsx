@@ -6,6 +6,8 @@ import { StatsCard } from '@/components/StatsCard'
 import { RecentTasks } from '@/components/RecentTasks'
 import { WeeklyOverview } from '@/components/WeeklyOverview'
 import { QuickActions } from '@/components/QuickActions'
+import { StreakStats } from '@/components/StreakStats'
+import { useStreakUpdate } from './_hooks/useStreakUpdate'
 import {
   Calendar,
   CheckCircle,
@@ -18,6 +20,9 @@ import {
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  // Update streak when user visits the page
+  useStreakUpdate()
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -128,7 +133,7 @@ export default function Home() {
       </div>
 
       {/* Additional Stats Row */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
         <StatsCard
           title='Pending Tasks'
           value={pendingTasks}
@@ -150,6 +155,7 @@ export default function Home() {
           description='Tasks that were stopped'
           color='red'
         />
+        <StreakStats />
       </div>
 
       {/* Main Content */}

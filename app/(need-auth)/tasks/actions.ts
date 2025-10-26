@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { Task } from '@/types/task'
 import { User } from '@/types/user'
 import { cookies } from 'next/headers'
+import { updateUserStreak } from '@/actions/streak'
 
 export async function createTask(data: Task) {
   const cookie = await cookies()
@@ -21,6 +22,10 @@ export async function createTask(data: Task) {
         userId: userId.id,
       },
     })
+
+    // Update user streak when creating a task
+    await updateUserStreak(userId.id)
+
     return task
   } catch (error) {
     console.error('Failed to create task:', error)
@@ -47,6 +52,10 @@ export async function updateTask(data: Task) {
         status: data.status,
       },
     })
+
+    // Update user streak when updating a task
+    await updateUserStreak(userId.id)
+
     return task
   } catch (error) {
     console.error('Failed to update task:', error)

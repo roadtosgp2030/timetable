@@ -52,6 +52,8 @@ export async function handleLogin(formData: FormData) {
         id: user.id,
         email: user.email,
         name: user.name,
+        streak: user.streak ?? 0,
+        lastActiveDate: user.lastActiveDate?.toISOString(),
       }),
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -116,6 +118,8 @@ export async function handleSignup(formData: FormData) {
         name: String(name),
         email: String(email),
         password: hashedPassword,
+        streak: 0,
+        lastActiveDate: null,
       },
     })
 
@@ -136,6 +140,8 @@ export async function handleSignup(formData: FormData) {
         id: newUser.id,
         email: newUser.email,
         name: newUser.name,
+        streak: newUser.streak ?? 0,
+        lastActiveDate: newUser.lastActiveDate?.toISOString(),
       }),
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
