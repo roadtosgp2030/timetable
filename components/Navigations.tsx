@@ -75,7 +75,7 @@ export default function Navigations() {
                   </div>
                   <div className='text-sm'>
                     <p className='text-gray-900 font-medium'>Welcome back!</p>
-                    <p className='text-gray-500 text-xs'>{user.email}</p>
+                    <p className='text-gray-500 text-xs'>{user.name}</p>
                   </div>
                 </div>
                 <button
