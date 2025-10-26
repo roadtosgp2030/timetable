@@ -143,7 +143,7 @@ export default function TasksPage() {
               </div>
 
               {/* Task Counter */}
-              <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-xl shadow-sm'>
+              <div className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 rounded-xl shadow-sm'>
                 <div className='text-sm font-medium text-center'>
                   {isLoading ? (
                     <span className='flex items-center justify-center gap-2'>
