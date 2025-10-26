@@ -36,9 +36,9 @@ export default function Navigations() {
           {/* Logo/Brand */}
           <div className='flex items-center'>
             <div className='flex-shrink-0'>
-              <h1 className='text-xl font-bold text-gray-900'>
+              <Link href='/' className='text-xl font-bold text-gray-900'>
                 <span className='text-blue-600'>Time</span>table
-              </h1>
+              </Link>
             </div>
           </div>
 
