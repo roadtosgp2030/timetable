@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getUser } from '@/utils/user'
-import { Flame, TrendingUp } from 'lucide-react'
+import { Flame, Info } from 'lucide-react'
 
 export function StreakStats() {
   const [streak, setStreak] = useState<number>(0)
@@ -37,30 +37,28 @@ export function StreakStats() {
 
   return (
     <div className='bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200'>
-      <div className='flex items-center justify-between mb-4'>
-        <div className='flex items-center space-x-2'>
-          <div className='p-2 bg-gradient-to-r from-orange-100 to-red-100 rounded-lg'>
-            <Flame className={`w-5 h-5 ${getStreakColor(streak)}`} />
+      <div className='flex items-center justify-between'>
+        <div className='flex-1'>
+          <div className='flex items-center'>
+            <div className='p-3 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 mr-4'>
+              <Flame className={`w-6 h-6 ${getStreakColor(streak)}`} />
+            </div>
+            <div>
+              <p className='text-sm font-medium text-gray-600'>Daily Streak</p>
+              <p className='text-2xl font-bold text-gray-900'>
+                {streak} day{streak !== 1 ? 's' : ''}
+              </p>
+            </div>
           </div>
-          <h3 className='text-lg font-semibold text-gray-900'>Daily Streak</h3>
-        </div>
-        <TrendingUp className='w-5 h-5 text-gray-400' />
-      </div>
-
-      <div className='space-y-2'>
-        <div className='flex items-baseline space-x-2'>
-          <span className='text-3xl font-bold text-gray-900'>{streak}</span>
-          <span className='text-sm text-gray-500'>
-            day{streak !== 1 ? 's' : ''}
-          </span>
-        </div>
-        <p className={`text-sm font-medium ${getStreakColor(streak)}`}>
-          {getStreakMessage(streak)}
-        </p>
-        <div className='mt-4 p-3 bg-gray-50 rounded-lg'>
-          <p className='text-xs text-gray-600'>
-            Keep logging in and creating tasks to maintain your streak!
+          <p className={`text-sm font-medium mt-2 ${getStreakColor(streak)}`}>
+            {getStreakMessage(streak)}
           </p>
+        </div>
+        <div className='relative group'>
+          <Info className='w-5 h-5 text-gray-400 hover:text-gray-600 cursor-help transition-colors' />
+          <div className='absolute right-0 top-full mt-2 w-64 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10'>
+            Keep logging in and creating tasks to maintain your streak!
+          </div>
         </div>
       </div>
     </div>
