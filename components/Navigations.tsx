@@ -5,12 +5,17 @@ import { getUser } from '@/utils/user'
 import Link from 'next/link'
 import { Home, Calendar, LogOut, User, Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import type { User as UserType } from '@/types/user'
 
 export default function Navigations() {
-  const user = getUser()!
+  const [user, setUser] = useState<UserType | null>(null)
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setUser(getUser())
+  }, [])
 
   const isActive = (href: string) => {
     if (href === '/') {
