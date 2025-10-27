@@ -13,9 +13,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     const token = cookie.get('token')?.value
     const userCookie = cookie.get('user')?.value
 
-    if (!token || token !== 'logged-in' || !userCookie) {
-      return null
-    }
+    if (!token || !userCookie) return null
 
     const userData = JSON.parse(userCookie) as AuthUser
 

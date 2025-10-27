@@ -2,7 +2,7 @@ import { jwtVerify } from 'jose'
 import { NextResponse, NextRequest } from 'next/server'
 
 // This function can be marked `async` if using `await` inside
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const jwtSecret = process.env.JWT_SECRET_KEY
   if (!jwtSecret) {
     throw new Error('JWT_SECRET_KEY is not configured')
@@ -17,32 +17,16 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith(path)
   )
 
-  // If accessing public paths, check if user is already authenticated
-  if (isPublicPath) {
-    try {
-      const token = request.cookies.get('token')?.value
-      if (token) {
-        await jwtVerify(token, secret)
-        // If authenticated and trying to access login/signup, redirect to home
-        const homeUrl = new URL('/', request.url)
-        return NextResponse.redirect(homeUrl)
-      }
-      // No token, allow access to public paths
-      return NextResponse.next()
-    } catch (error) {
-      // Invalid token, allow access to public paths
-      return NextResponse.next()
-    }
-  }
-
   // For protected paths, verify authentication
   try {
     const token = request.cookies.get('token')?.value
-    if (!token) {
-      throw new Error('No token found')
+    if (token) {
+      await jwtVerify(token, secret)
+      // If token is valid and user tries to access public path, redirect to home
+      if (isPublicPath) return NextResponse.redirect(new URL('/', request.url))
+      return NextResponse.next()
     }
-    await jwtVerify(token, secret)
-    // Allow request to protected path
+    if (!isPublicPath) throw new Error('Authentication required')
     return NextResponse.next()
   } catch (error) {
     // If token verification fails, redirect to login page
