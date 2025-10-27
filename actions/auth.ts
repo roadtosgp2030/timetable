@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import bcrypt from 'bcryptjs'
+import { SignJWT } from 'jose'
 import { validateEmail, validatePassword } from '@/lib/auth'
 
 export async function handleLogin(formData: FormData) {
@@ -37,9 +38,19 @@ export async function handleLogin(formData: FormData) {
 
     // Set authentication cookies
     const cookie = await cookies()
+    const jwtSecret = process.env.JWT_SECRET_KEY
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET_KEY is not configured')
+    }
+    const secret = new TextEncoder().encode(jwtSecret)
+    const token = await new SignJWT({ userId: user.id })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('7d')
+      .setIssuedAt()
+      .sign(secret)
     cookie.set({
       name: 'token',
-      value: 'logged-in',
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -125,9 +136,20 @@ export async function handleSignup(formData: FormData) {
 
     // Set cookies for automatic login after signup
     const cookie = await cookies()
+    const jwtSecret = process.env.JWT_SECRET_KEY
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET_KEY is not configured')
+    }
+    const secret = new TextEncoder().encode(jwtSecret)
+    const token = await new SignJWT({ userId: newUser.id })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('7d')
+      .setIssuedAt()
+      .sign(secret)
+
     cookie.set({
       name: 'token',
-      value: 'logged-in',
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
