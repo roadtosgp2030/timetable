@@ -57,35 +57,46 @@ export function useCalendarFns({
   }
 
   const onDropOrResize = async (info: EventDropArg | EventResizeDoneArg) => {
-    setTasks(prev =>
-      prev.map(event => {
-        if (event.id === info.event.id) {
-          return {
-            ...event,
-            start: info.event.start!,
-            end: info.event.end,
-          }
-        }
-        return event
-      })
-    )
-    
     // Find the event to update
     const eventToUpdate = tasks.find(event => event.id === info.event.id)
     if (eventToUpdate) {
-      // Wait for the server action to complete (including streak update)
-      await updateTask({
-        id: eventToUpdate.id,
-        title: eventToUpdate.title,
-        description: eventToUpdate.description,
-        start: info.event.start!,
-        end: info.event.end || undefined,
-        status: eventToUpdate.status,
-      })
-      
-      // Import and dispatch custom event to notify streak components
-      const { dispatchStreakUpdate } = await import('@/utils/streakEvents')
-      dispatchStreakUpdate()
+      try {
+        // Execute server action first (including streak update)
+        const updatedTask = await updateTask({
+          id: eventToUpdate.id,
+          title: eventToUpdate.title,
+          description: eventToUpdate.description,
+          start: info.event.start!,
+          end: info.event.end || undefined,
+          status: eventToUpdate.status,
+        })
+        
+        // Update state with data returned from server
+        setTasks(prev =>
+          prev.map(event => {
+            if (event.id === info.event.id) {
+              return {
+                id: updatedTask.id,
+                title: updatedTask.title,
+                description: updatedTask.description || undefined,
+                start: new Date(updatedTask.start),
+                end: updatedTask.end ? new Date(updatedTask.end) : undefined,
+                allDay: event.allDay, // Keep original allDay value
+                status: updatedTask.status as any, // Type assertion for TaskStatus
+              }
+            }
+            return event
+          })
+        )
+        
+        // Import and dispatch custom event to notify streak components
+        const { dispatchStreakUpdate } = await import('@/utils/streakEvents')
+        dispatchStreakUpdate()
+      } catch (error) {
+        console.error('Failed to update task:', error)
+        // Revert the calendar change if server update failed
+        info.revert()
+      }
     }
   }
 

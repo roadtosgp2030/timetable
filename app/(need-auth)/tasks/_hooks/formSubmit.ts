@@ -1,4 +1,4 @@
-import { Task } from '@/types/task'
+import { Task, TaskStatus } from '@/types/task'
 import { EventFormData } from '@/utils/task'
 import { DateSelectArg } from '@fullcalendar/core/index.js'
 import { createTask, updateTask } from '../actions'
@@ -18,61 +18,79 @@ export default function useFormSubmit({
   onEffect,
 }: PropsType) {
   const handleFormSubmit = async (formData: EventFormData) => {
-    if (editingEvent) {
-      // Update existing event
-      setTasks((prev: Task[]) => {
-        const newTasks = prev.map(event =>
-          event.id === editingEvent.id
-            ? {
-                ...event,
-                title: formData.title,
-                description: formData.description,
-                start: new Date(formData.start),
-                end: new Date(formData.end),
-                allDay: formData.allDay,
-                status: formData.status,
-              }
-            : event
+    try {
+      if (editingEvent) {
+        // Execute server action first (including streak update)
+        const updatedTask = await updateTask({
+          id: editingEvent.id,
+          title: formData.title,
+          description: formData.description,
+          start: new Date(formData.start),
+          end: new Date(formData.end),
+          status: formData.status,
+        })
+        
+        // Update state with data returned from server
+        setTasks((prev: Task[]) =>
+          prev.map(event =>
+            event.id === editingEvent.id
+              ? {
+                  id: updatedTask.id,
+                  title: updatedTask.title,
+                  description: updatedTask.description || undefined,
+                  start: new Date(updatedTask.start),
+                  end: updatedTask.end ? new Date(updatedTask.end) : undefined,
+                  allDay: event.allDay, // Keep original allDay value
+                  status: updatedTask.status as TaskStatus,
+                }
+              : event
+          )
         )
-        return newTasks
-      })
-      
-      // Wait for the server action to complete (including streak update)
-      await updateTask({
-        id: editingEvent.id,
-        title: formData.title,
-        description: formData.description,
-        start: new Date(formData.start),
-        end: new Date(formData.end),
-        status: formData.status,
-      })
-      
-      // Dispatch custom event to notify streak components
-      dispatchStreakUpdate()
-    } else if (selectedDateInfo) {
-      // Create new event
-      const newEvent: Task = {
-        id: String(Date.now()),
-        title: formData.title,
-        description: formData.description,
-        start: formData.allDay
-          ? selectedDateInfo.start
-          : new Date(formData.start),
-        end: formData.allDay ? selectedDateInfo.end : new Date(formData.end),
-        allDay: formData.allDay,
-        status: formData.status,
+        
+        // Dispatch custom event to notify streak components
+        dispatchStreakUpdate()
+      } else if (selectedDateInfo) {
+        // Prepare new event data
+        const newEventData: Task = {
+          id: String(Date.now()), // Temporary ID, server will provide the real one
+          title: formData.title,
+          description: formData.description,
+          start: formData.allDay
+            ? selectedDateInfo.start
+            : new Date(formData.start),
+          end: formData.allDay ? selectedDateInfo.end : new Date(formData.end),
+          allDay: formData.allDay,
+          status: formData.status,
+        }
+        
+        // Execute server action first (including streak update)
+        const createdTask = await createTask(newEventData)
+        
+        // Update state with data returned from server
+        setTasks(prev => [
+          ...prev,
+          {
+            id: createdTask.id,
+            title: createdTask.title,
+            description: createdTask.description || undefined,
+            start: new Date(createdTask.start),
+            end: createdTask.end ? new Date(createdTask.end) : undefined,
+            allDay: newEventData.allDay,
+            status: createdTask.status as TaskStatus,
+          }
+        ])
+        
+        // Dispatch custom event to notify streak components
+        dispatchStreakUpdate()
       }
-      
-      setTasks(prev => [...prev, newEvent])
-      
-      // Wait for the server action to complete (including streak update)
-      await createTask(newEvent)
-      
-      // Dispatch custom event to notify streak components
-      dispatchStreakUpdate()
-    }
 
-    onEffect()
+      onEffect()
+    } catch (error) {
+      console.error('Failed to submit form:', error)
+      // You might want to show an error message to the user here
+      // For now, we'll still call onEffect to close the modal
+      onEffect()
+    }
   }
 
   return { handleFormSubmit }

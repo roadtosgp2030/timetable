@@ -5,6 +5,7 @@ import { Task } from '@/types/task'
 import { User } from '@/types/user'
 import { cookies } from 'next/headers'
 import { updateUserStreak } from '@/actions/streak'
+import { revalidatePath } from 'next/cache'
 
 export async function createTask(data: Task) {
   const cookie = await cookies()
@@ -69,6 +70,11 @@ export async function deleteTask(taskId: string) {
   const userId: User = JSON.parse(decodeURIComponent(userEncoded!))
 
   try {
+    // Validate the taskId format before using it
+    if (!taskId || taskId.length !== 24) {
+      throw new Error('Invalid task ID format')
+    }
+
     const task = await prisma.task.update({
       where: {
         id: taskId,
@@ -78,6 +84,9 @@ export async function deleteTask(taskId: string) {
         isDeleted: true,
       },
     })
+
+    revalidatePath('/tasks')
+
     return task
   } catch (error) {
     console.error('Failed to delete task:', error)
