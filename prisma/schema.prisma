@@ -19,6 +19,7 @@ model User {
   password  String
   name      String?
   tasks     Task[]
+  budgets   Budget[]
   streak    Int      @default(0)
   lastActiveDate DateTime?
   createdAt DateTime? @default(now())
@@ -36,6 +37,33 @@ model Task {
   end         DateTime?
   user        User     @relation(fields: [userId], references: [id])
   isDeleted   Boolean?  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Budget {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  month       Int          // 1-12 for January-December
+  year        Int
+  totalBudget Float
+  userId      String       @db.ObjectId
+  user        User         @relation(fields: [userId], references: [id])
+  items       BudgetItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  @@unique([userId, month, year])
+}
+
+model BudgetItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  category    String
+  budgetAmount Float
+  spentAmount  Float    @default(0)
+  budgetId    String   @db.ObjectId
+  budget      Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
