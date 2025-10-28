@@ -1,10 +1,11 @@
 # Budget Feature
 
-A comprehensive budget management system that allows users to create and track monthly budgets with spending items.
+A comprehensive budget management system that allows users to create and track monthly budgets with spending items in Vietnamese Dong (VND).
 
 ## Features
 
 - **Monthly Budget Creation**: Create budgets for specific months and years
+- **Vietnamese Dong Currency**: All amounts displayed and input in VND format
 - **Spending Categories**: Organize expenses into predefined categories
 - **Real-time Tracking**: Update spending amounts and see progress in real-time
 - **Visual Progress Indicators**: Color-coded progress bars and status indicators

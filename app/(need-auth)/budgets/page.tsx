@@ -15,7 +15,7 @@ const mockBudgets: Budget[] = [
     name: 'October 2025 Budget',
     month: 10,
     year: 2025,
-    totalBudget: 3000,
+    totalBudget: 75000000, // 75 million VND
     userId: 'user1',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -24,8 +24,8 @@ const mockBudgets: Budget[] = [
         id: '1',
         name: 'Groceries',
         category: 'Food & Dining',
-        budgetAmount: 500,
-        spentAmount: 320,
+        budgetAmount: 12000000, // 12 million VND
+        spentAmount: 8000000, // 8 million VND
         budgetId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -34,8 +34,8 @@ const mockBudgets: Budget[] = [
         id: '2',
         name: 'Gas',
         category: 'Transportation',
-        budgetAmount: 200,
-        spentAmount: 150,
+        budgetAmount: 5000000, // 5 million VND
+        spentAmount: 3750000, // 3.75 million VND
         budgetId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -44,8 +44,8 @@ const mockBudgets: Budget[] = [
         id: '3',
         name: 'Entertainment',
         category: 'Entertainment',
-        budgetAmount: 300,
-        spentAmount: 280,
+        budgetAmount: 7500000, // 7.5 million VND
+        spentAmount: 7000000, // 7 million VND
         budgetId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -54,8 +54,8 @@ const mockBudgets: Budget[] = [
         id: '4',
         name: 'Utilities',
         category: 'Bills & Utilities',
-        budgetAmount: 150,
-        spentAmount: 145,
+        budgetAmount: 3750000, // 3.75 million VND
+        spentAmount: 3625000, // 3.625 million VND
         budgetId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -67,7 +67,7 @@ const mockBudgets: Budget[] = [
     name: 'September 2025 Budget',
     month: 9,
     year: 2025,
-    totalBudget: 2800,
+    totalBudget: 70000000, // 70 million VND
     userId: 'user1',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -76,8 +76,8 @@ const mockBudgets: Budget[] = [
         id: '5',
         name: 'Groceries',
         category: 'Food & Dining',
-        budgetAmount: 450,
-        spentAmount: 480,
+        budgetAmount: 11250000, // 11.25 million VND
+        spentAmount: 12000000, // 12 million VND (over budget)
         budgetId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -86,8 +86,8 @@ const mockBudgets: Budget[] = [
         id: '6',
         name: 'Transportation',
         category: 'Transportation',
-        budgetAmount: 180,
-        spentAmount: 175,
+        budgetAmount: 4500000, // 4.5 million VND
+        spentAmount: 4375000, // 4.375 million VND
         budgetId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -96,8 +96,8 @@ const mockBudgets: Budget[] = [
         id: '7',
         name: 'Shopping',
         category: 'Shopping',
-        budgetAmount: 250,
-        spentAmount: 320,
+        budgetAmount: 6250000, // 6.25 million VND
+        spentAmount: 8000000, // 8 million VND (over budget)
         budgetId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),

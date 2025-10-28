@@ -130,7 +130,7 @@ export function BudgetCard({
                   <>
                     <Input
                       type='number'
-                      step='0.01'
+                      step='1000'
                       min='0'
                       value={tempSpending[item.id] || ''}
                       onChange={e =>
@@ -139,7 +139,7 @@ export function BudgetCard({
                           [item.id]: parseFloat(e.target.value) || 0,
                         })
                       }
-                      className='w-20 h-8'
+                      className='w-40 h-8'
                       disabled={isUpdating}
                     />
                     <Button
@@ -159,8 +159,8 @@ export function BudgetCard({
                 ) : (
                   <>
                     <span className='text-sm'>
-                      ${item.spentAmount.toFixed(2)} / $
-                      {item.budgetAmount.toFixed(2)}
+                      {formatCurrency(item.spentAmount)} /{' '}
+                      {formatCurrency(item.budgetAmount)}
                     </span>
                     <Button
                       size='sm'
@@ -194,7 +194,7 @@ export function BudgetCard({
               {((item.spentAmount / item.budgetAmount) * 100).toFixed(1)}% used
               {item.spentAmount > item.budgetAmount && (
                 <span className='text-red-500 ml-2'>
-                  (${(item.spentAmount - item.budgetAmount).toFixed(2)} over)
+                  ({formatCurrency(item.spentAmount - item.budgetAmount)} over)
                 </span>
               )}
             </div>

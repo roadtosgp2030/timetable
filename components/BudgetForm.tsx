@@ -104,11 +104,11 @@ export function BudgetForm({ onSubmit, onCancel, isLoading }: BudgetFormProps) {
         </div>
 
         <div>
-          <Label htmlFor='totalBudget'>Total Budget</Label>
+          <Label htmlFor='totalBudget'>Total Budget (VND)</Label>
           <Input
             id='totalBudget'
             type='number'
-            step='0.01'
+            step='1000'
             min='0'
             value={formData.totalBudget || ''}
             onChange={e =>
@@ -117,9 +117,12 @@ export function BudgetForm({ onSubmit, onCancel, isLoading }: BudgetFormProps) {
                 totalBudget: parseFloat(e.target.value) || 0,
               })
             }
-            placeholder='0.00'
+            placeholder='e.g., 50000000 (50 million VND)'
             required
           />
+          <p className='text-xs text-gray-500 mt-1'>
+            Enter amount in VND (e.g., 50,000,000 for 50 million VND)
+          </p>
         </div>
 
         <div>
@@ -190,12 +193,12 @@ export function BudgetForm({ onSubmit, onCancel, isLoading }: BudgetFormProps) {
                 </select>
               </div>
 
-              <div className='w-32'>
+              <div className='w-40'>
                 <Input
                   type='number'
-                  step='0.01'
+                  step='1000'
                   min='0'
-                  placeholder='0.00'
+                  placeholder='VND amount'
                   value={item.budgetAmount || ''}
                   onChange={e =>
                     updateItem(
@@ -226,7 +229,7 @@ export function BudgetForm({ onSubmit, onCancel, isLoading }: BudgetFormProps) {
             <div className='flex justify-between text-sm'>
               <span>Total Items Budget:</span>
               <span className='font-medium'>
-                ${totalItemsBudget.toFixed(2)}
+                {totalItemsBudget.toLocaleString('vi-VN')} VND
               </span>
             </div>
             {totalItemsBudget > formData.totalBudget && (
