@@ -6,8 +6,8 @@
       "",
       "}",
       "",
-      "export function ${1:ComponentName}({ ${3:/* props */} }: PropsType) {",
-      "",
+      "export default function ${1:ComponentName}({}: PropsType) {",
+      "return <div>$2</div>;",
       "}"
     ],
     "description": "Create a React TypeScript functional component with interface"
