@@ -21,9 +21,6 @@ export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Update streak when user visits the page
-  useStreakUpdate()
-
   useEffect(() => {
     const fetchTasks = async () => {
       try {

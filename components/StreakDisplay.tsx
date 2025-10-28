@@ -8,13 +8,38 @@ export default function StreakDisplay() {
   const [streak, setStreak] = useState<number>(0)
   const [isVisible, setIsVisible] = useState(false)
 
-  useEffect(() => {
+  const updateStreak = () => {
     const user = getUser()
     if (user && typeof user.streak === 'number') {
       setStreak(user.streak)
       setIsVisible(true)
     }
-  }, [])
+  }
+
+  useEffect(() => {
+    updateStreak()
+
+    // Listen for custom events that might indicate streak updates
+    const handleStreakUpdate = () => {
+      updateStreak()
+    }
+
+    // Add event listener for custom events
+    window.addEventListener('streakUpdated', handleStreakUpdate)
+    
+    // Also check for cookie changes periodically (fallback)
+    const interval = setInterval(() => {
+      const user = getUser()
+      if (user && user.streak !== streak) {
+        updateStreak()
+      }
+    }, 1000) // Check every second
+
+    return () => {
+      window.removeEventListener('streakUpdated', handleStreakUpdate)
+      clearInterval(interval)
+    }
+  }, [streak])
 
   if (!isVisible) {
     return null

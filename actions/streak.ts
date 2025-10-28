@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import { shouldResetStreak, shouldIncrementStreak } from '@/utils/streak'
+import { revalidatePath } from 'next/cache';
 
 export async function updateUserStreak(
   userId: string
@@ -41,15 +42,15 @@ export async function updateUserStreak(
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        streak: newStreak,
-        lastActiveDate: today,
+      streak: newStreak,
+      lastActiveDate: today,
       },
       select: {
-        id: true,
-        email: true,
-        name: true,
-        streak: true,
-        lastActiveDate: true,
+      id: true,
+      email: true,
+      name: true,
+      streak: true,
+      lastActiveDate: true,
       },
     })
 
@@ -69,6 +70,10 @@ export async function updateUserStreak(
         sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 7, // 7 days
       })
+      
+      // Revalidate multiple paths to ensure all pages are updated
+      revalidatePath('/')
+      revalidatePath('/tasks')
     }
 
     return { streak: newStreak, updated }

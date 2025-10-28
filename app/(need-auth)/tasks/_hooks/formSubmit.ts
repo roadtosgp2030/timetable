@@ -2,6 +2,7 @@ import { Task } from '@/types/task'
 import { EventFormData } from '@/utils/task'
 import { DateSelectArg } from '@fullcalendar/core/index.js'
 import { createTask, updateTask } from '../actions'
+import { dispatchStreakUpdate } from '@/utils/streakEvents'
 
 interface PropsType {
   editingEvent: Task | null
@@ -16,7 +17,7 @@ export default function useFormSubmit({
   setTasks,
   onEffect,
 }: PropsType) {
-  const handleFormSubmit = (formData: EventFormData) => {
+  const handleFormSubmit = async (formData: EventFormData) => {
     if (editingEvent) {
       // Update existing event
       setTasks((prev: Task[]) => {
@@ -33,16 +34,21 @@ export default function useFormSubmit({
               }
             : event
         )
-        updateTask({
-          id: editingEvent.id,
-          title: formData.title,
-          description: formData.description,
-          start: new Date(formData.start),
-          end: new Date(formData.end),
-          status: formData.status,
-        })
         return newTasks
       })
+      
+      // Wait for the server action to complete (including streak update)
+      await updateTask({
+        id: editingEvent.id,
+        title: formData.title,
+        description: formData.description,
+        start: new Date(formData.start),
+        end: new Date(formData.end),
+        status: formData.status,
+      })
+      
+      // Dispatch custom event to notify streak components
+      dispatchStreakUpdate()
     } else if (selectedDateInfo) {
       // Create new event
       const newEvent: Task = {
@@ -56,8 +62,14 @@ export default function useFormSubmit({
         allDay: formData.allDay,
         status: formData.status,
       }
-      createTask(newEvent)
+      
       setTasks(prev => [...prev, newEvent])
+      
+      // Wait for the server action to complete (including streak update)
+      await createTask(newEvent)
+      
+      // Dispatch custom event to notify streak components
+      dispatchStreakUpdate()
     }
 
     onEffect()

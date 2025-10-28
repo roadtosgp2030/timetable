@@ -56,18 +56,10 @@ export function useCalendarFns({
     }
   }
 
-  const onDropOrResize = (info: EventDropArg | EventResizeDoneArg) => {
+  const onDropOrResize = async (info: EventDropArg | EventResizeDoneArg) => {
     setTasks(prev =>
       prev.map(event => {
         if (event.id === info.event.id) {
-          updateTask({
-            id: event.id,
-            title: event.title,
-            description: event.description,
-            start: info.event.start!,
-            end: info.event.end || undefined,
-            status: event.status,
-          })
           return {
             ...event,
             start: info.event.start!,
@@ -77,6 +69,24 @@ export function useCalendarFns({
         return event
       })
     )
+    
+    // Find the event to update
+    const eventToUpdate = tasks.find(event => event.id === info.event.id)
+    if (eventToUpdate) {
+      // Wait for the server action to complete (including streak update)
+      await updateTask({
+        id: eventToUpdate.id,
+        title: eventToUpdate.title,
+        description: eventToUpdate.description,
+        start: info.event.start!,
+        end: info.event.end || undefined,
+        status: eventToUpdate.status,
+      })
+      
+      // Import and dispatch custom event to notify streak components
+      const { dispatchStreakUpdate } = await import('@/utils/streakEvents')
+      dispatchStreakUpdate()
+    }
   }
 
   return {

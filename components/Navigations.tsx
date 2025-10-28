@@ -15,7 +15,22 @@ export default function Navigations() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    setUser(getUser())
+    const updateUser = () => {
+      setUser(getUser())
+    }
+    
+    updateUser()
+
+    // Listen for streak updates to refresh user data
+    const handleStreakUpdate = () => {
+      updateUser()
+    }
+
+    window.addEventListener('streakUpdated', handleStreakUpdate)
+
+    return () => {
+      window.removeEventListener('streakUpdated', handleStreakUpdate)
+    }
   }, [])
 
   const isActive = (href: string) => {
